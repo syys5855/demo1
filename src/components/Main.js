@@ -7,10 +7,10 @@ import React from 'react';
 import ControllreComponent from './Controller';
 var ReactDOM =require('react-dom');
 // let yeomanImage = require('../images/yeoman.png');
-let imagesData = require("../../data/imagesData.json");
+let imagesData = require('../../data/imagesData.json');
 imagesData=(function(imgsArr){
-	imgsArr.forEach(function(imgObj,index){
-		imgObj.imgUrl=require("../images/"+imgObj.fileName);//获取url
+	imgsArr.forEach(function(imgObj){
+		imgObj.imgUrl=require('../images/'+imgObj.fileName);//获取url
 	});
 	return imgsArr;
 
@@ -26,14 +26,14 @@ class ImgComponent extends React.Component{
 	  super();
 	}
 	render(){
-		var styleObj={left:0,top:0};
+		var styleObj={};
 		if(this.props.layout.pos){
-			styleObj=this.props.layout.pos;
+			Object.assign(styleObj, this.props.layout.pos);//方法用于对象的合并，将源对象（source）的所有可枚举属性，复制到目标对象（target）。
 		}
 		return (
-			<div className="stage-img" style={styleObj}>
+			<div className='stage-img' style={styleObj}>
 				<img  src={this.props.data.imgUrl} alt={this.props.data.title} />
-				<div className="stage-img-title">
+				<div className='stage-img-title'>
 					{this.props.data.title}
 				</div>
 			</div>
@@ -47,8 +47,8 @@ class AppComponent extends React.Component {
 	// 图片的坐标信息
 	static Constant={
 		centerPos:{
-			left:0,
-			top:0
+			// left:0,
+			// top:0
 		},
 		// 水平坐标
 		// left: 左边区域
@@ -85,14 +85,10 @@ class AppComponent extends React.Component {
 		var imgsArrangerArr=this.state.imgsArrangerArr,
 			Constant=AppComponent.Constant,
 			centerPos=Constant.centerPos,
-			hPosRange=Constant.hPosRange,
-			vPosRange=Constant.vPosRange;
-
-		
-		
-		var _imgs = imgsArrangerArr.splice(centerIndex);
-		imgsArrangerArr[0].pos=centerPos;
-		_imgs.forEach(function(value,index){
+			hPosRange=Constant.hPosRange;	
+		var _imgs = imgsArrangerArr.splice(centerIndex,1);
+		_imgs[0].pos=centerPos;
+		imgsArrangerArr.forEach(function(value,index){
 			if(index%2===0){
 				value.pos.left=random(hPosRange.left.left[0],hPosRange.left.left[1]);
 				value.pos.top=random(hPosRange.left.top[0],hPosRange.left.top[1]);
@@ -103,15 +99,15 @@ class AppComponent extends React.Component {
 			}	
 		});
 
-		_imgs.splice(centerIndex-1, 0,imgsArrangerArr[0])
+		imgsArrangerArr.splice(centerIndex, 0,_imgs[0]);//合并数组
 		this.setState({
-			imgsArrangerArr: _imgs
+			imgsArrangerArr: imgsArrangerArr
 		});
 	}	
 	constructor(){
 		super();
 		this.state={
-			name:"syys",
+			name:'syys',
 			imagesData:imagesData,
 			imgsArrangerArr:[]
 		}
@@ -141,7 +137,7 @@ class AppComponent extends React.Component {
 		Constant.hPosRange.left.top=[Math.ceil(-imgHalfH),Math.ceil(stageHalfH+imgHalfH)];
 	
 		// 计算右边区域的位置
-		Constant.hPosRange.right.left=[Math.ceil(stageHalfW+imgHalfW),Math.ceil(stageW+imgHalfW)];
+		Constant.hPosRange.right.left=[Math.ceil(stageHalfW+imgHalfW),Math.ceil(stageW-imgHalfW)];
 		Constant.hPosRange.right.top=[Math.ceil(-imgHalfH),Math.ceil(stageHalfH+imgHalfH)];
 
 		// 计算顶部的区域位置
@@ -152,7 +148,7 @@ class AppComponent extends React.Component {
 		Constant.vPosRange.bottom.left=[Math.ceil(stageHalfW-imgHalfW),Math.ceil(stageHalfW+imgHalfW)];
 		Constant.vPosRange.bottom.top=[Math.ceil(stageHalfH+imgHalfH),Math.ceil(stageH+imgHalfH)];
 
-		this.relayout(1);
+		this.relayout(0);
 	}
     render() {
 		
@@ -170,17 +166,17 @@ class AppComponent extends React.Component {
 					}
 				}
 			}
-			imgs.push(<ImgComponent data={imgObj} ref={"ImgComponent"+index} key={"ImgComponent"+index}
+			imgs.push(<ImgComponent data={imgObj} ref={'ImgComponent'+index} key={'ImgComponent'+index}
 				layout={this.state.imgsArrangerArr[index]}/>);
-			controllers.push(<ControllreComponent key={"ControllreComponent"+index}/>);
+			controllers.push(<ControllreComponent key={'ControllreComponent'+index}/>);
 		}.bind(this));
 
         return ( 
-        	<div ref="stage" className="stage">
-				<div className="stage-imgs">
+        	<div ref='stage' className='stage'>
+				<div className='stage-imgs'>
 					{imgs}
 				</div>
-				<div className="stage-nav">
+				<div className='stage-nav'>
 					{controllers}
 				</div>
         	</div>
