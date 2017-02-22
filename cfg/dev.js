@@ -36,4 +36,14 @@ config.module.loaders.push({
   )
 });
 
+config.devServer={
+    proxy: {
+        '/**/*.json': {
+            target: "https://test-pc.mandofin.com/",
+            changeOrigin: true,
+            secure: false
+        }
+    }
+}
+
 module.exports = config;

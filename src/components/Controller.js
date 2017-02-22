@@ -7,7 +7,7 @@ class ControllreComponent extends React.Component{
 	render(){
 		return (
 			<span>
-				ceshixingxi
+				ctrl 
 			</span>
 		);
 	}
